@@ -1,41 +1,10 @@
 import segment
-
-# strmap = [
-# 	["1111111111"],
-# 	["1011000001"],
-# 	["10000001011"],
-# 	["10000011001"],
-# 	["1N000011011"],
-# 	["1000000001"],
-# 	["1111111111"]
-# ]
-
-strmap = [
-	["1111111111               111"],
-	["1000010001               101"],
-	["1000010011               101"],
-	["1001110001111    1111    101"],
-	["1001110000001    101111 1101"],
-	["1011000001101111 100001 1001"],
-	["1010001111100001111010111011"],
-	["1010001   10000001001000001"],
-	["1010011   11111011011010101"],
-	["101011        1011011000101"],
-	["101001111111111000011111101"],
-	["101100000000000000111111001"],
-	["10000011111111111000000001"],
-	["1111101         1111111111"],
-	["    101"],
-	["    101111111111111"],
-	["    100000000000001"],
-	["    100000000000001"],
-	["    10000000000N001"],
-	["    111111111111111"],
-]
+import define
 
 MAP = []
 
-for line in strmap:
+# Transform list of str to list of list
+for line in define.STRMAP:
 	lst = []
 	for c in line[0]:
 		if c == '0':
@@ -56,34 +25,32 @@ for line in strmap:
 
 MAP_H = len(MAP)
 
-WALL_SIZE = 100
-
-CEIL_COLOR = (100, 100, 200)
-FLOOR_COLOR = (50, 100, 50)
-
+# Function du get the pos and orientation of the player
 def getPlayerPosFromMap():
 
 	for mapY in range(len(MAP)):
 		for mapX in range(len(MAP[mapY])):
 			if MAP[mapY][mapX] == 2: # Player look Noth
-				return (mapX * WALL_SIZE + (WALL_SIZE / 2), mapY * WALL_SIZE + (WALL_SIZE / 2)), 270
+				return (mapX * define.WALL_SIZE + (define.WALL_SIZE / 2), mapY * define.WALL_SIZE + (define.WALL_SIZE / 2)), 270
 			if MAP[mapY][mapX] == 3: # Player look East
-				return (mapX * WALL_SIZE + (WALL_SIZE / 2), mapY * WALL_SIZE + (WALL_SIZE / 2)), 0
+				return (mapX * define.WALL_SIZE + (define.WALL_SIZE / 2), mapY * define.WALL_SIZE + (define.WALL_SIZE / 2)), 0
 			if MAP[mapY][mapX] == 4: # Player look South
-				return (mapX * WALL_SIZE + (WALL_SIZE / 2), mapY * WALL_SIZE + (WALL_SIZE / 2)), 90
+				return (mapX * define.WALL_SIZE + (define.WALL_SIZE / 2), mapY * define.WALL_SIZE + (define.WALL_SIZE / 2)), 90
 			if MAP[mapY][mapX] == 5: # Player look West
-				return (mapX * WALL_SIZE + (WALL_SIZE / 2), mapY * WALL_SIZE + (WALL_SIZE / 2)), 180
+				return (mapX * define.WALL_SIZE + (define.WALL_SIZE / 2), mapY * define.WALL_SIZE + (define.WALL_SIZE / 2)), 180
 
 	return (100, 100), 0
 
 
+# Function to create all segment usefull for a wall
+# if a segment face to void or to another wall, it isn't create
 def getSegmentFromWall(mapX, mapY):
 	segments = []
 
-	x1 = mapX * WALL_SIZE
-	x2 = mapX * WALL_SIZE + WALL_SIZE
-	y1 = mapY * WALL_SIZE
-	y2 = mapY * WALL_SIZE + WALL_SIZE
+	x1 = mapX * define.WALL_SIZE
+	x2 = mapX * define.WALL_SIZE + define.WALL_SIZE
+	y1 = mapY * define.WALL_SIZE
+	y2 = mapY * define.WALL_SIZE + define.WALL_SIZE
 
 	if 0 < mapY and mapX < len(MAP[mapY - 1]) - 1 and abs(MAP[mapY - 1][mapX]) != 1:
 		# Add up segment
@@ -101,6 +68,7 @@ def getSegmentFromWall(mapX, mapY):
 	return segments
 
 
+# Function to get all segment of the map
 def getSegmentFromMap():
 	segments = []
 

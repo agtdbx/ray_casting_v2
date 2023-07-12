@@ -1,5 +1,6 @@
 import ray
 import math_functions as mf
+import define
 
 import pygame as pg
 import numpy as np
@@ -10,15 +11,16 @@ class Player:
 	def __init__(self, pos, orientation):
 		self.pos = np.array(pos)
 		self.orientation = self.checkOrientation(orientation)
-		self.moveSpeed = 5
-		self.rotateSpeed = 2
-		self.fov = 70
+		self.moveSpeed = define.PLAYER_MOVEMENT_SPEED
+		self.rotateSpeed = define.PLAYER_ROTATION_SPEED
+		self.fov = define.PLAYER_FOV
 		self.halfFov = self.fov / 2
 		self.fovRatio = self.fov / 360 * 3
 		self.run = False
 		self.computeVec()
 
 
+	# Method to have degrees always in range [0, 359]
 	def checkOrientation(self, orientation):
 		while orientation < 0:
 			orientation += 360
@@ -27,6 +29,7 @@ class Player:
 		return orientation
 
 
+	# Method to compute the vec of the player used for movement
 	def computeVec(self):
 		# Front vector
 		self.vecFront = mf.orientationToVec(self.orientation)
@@ -62,6 +65,7 @@ class Player:
 		pg.draw.polygon(win, (100, 255, 100), [p1, p2, p3])
 
 
+	# The collid method to kwon if the player can move
 	def collid(self, pos, segments):
 		radius = 25
 
@@ -86,7 +90,6 @@ class Player:
 
 			if minDist <= radius and maxDist >= radius:
 				return True
-
 
 		return False
 
@@ -132,6 +135,7 @@ class Player:
 		self.run = run
 
 
+	# The method to get the ray used for raycasting
 	def getRays(self, nbRay):
 		rays = []
 		startOrientation = self.checkOrientation(self.orientation - self.halfFov)

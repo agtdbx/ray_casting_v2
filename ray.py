@@ -5,16 +5,20 @@ import pygame as pg
 import numpy as np
 from numba import njit
 
+# Dot product beetween 2D vectors
 @njit(fastmath=True)
 def dot(v1, v2):
 	return (v1[0] * v2[0]) + (v1[1] * v2[1])
 
 
+# Cross product beetween 2D vectors
 @njit(fastmath=True)
 def cross(v1, v2):
 	return (v1[0] * v2[1]) - (v1[1] * v2[0])
 
 
+# Function to do the intersection beetween a ray and a segment
+# The decorate defore def is to speedup the function
 @njit(fastmath=True)
 def makeCollid(rayOrigin, rayDir, segNormal, segDir, segP1):
 	if 0 <= dot(rayDir, segNormal):
@@ -44,11 +48,11 @@ class Ray:
 		self.origin = origin
 		self.vec = vec
 
-
+	# The collid method of ray with a segment
 	def collid(self, seg):
 		dist, xRatio = makeCollid(self.origin, self.vec, seg.normal, seg.vec, seg.p1)
 
 		if dist < 0:
-			return (-1, -1, -1, -1)
+			return (-1, None, None, None)
 
 		return (dist, mf.movePoint(self.origin, self.vec, dist), xRatio, seg.face)

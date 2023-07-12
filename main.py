@@ -2,15 +2,13 @@ import segment
 import player
 import mymap
 import math_functions as mf
+import define
 
 import pygame as pg
 import numpy as np
 import math
 import time
 import sys
-
-
-PI_DIV_180 = math.pi / 180
 
 
 def keySortSegment(elem):
@@ -24,9 +22,8 @@ class Game:
 		"""
 		pg.init() # Start of pygame
 
-		infoObject = pg.display.Info() # We get the screen size of the computer
-		self.winSize = ((infoObject.current_w, infoObject.current_h - 63)) # We remove the toolbar of the window's height
-		self.win  = pg.display.set_mode(self.winSize, pg.RESIZABLE) # We create the window
+		self.winSize = ((define.WIN_W, define.WIN_H)) # We remove the toolbar of the window's height
+		self.win = pg.display.set_mode(self.winSize, pg.RESIZABLE) # We create the window
 
 		self.clock = pg.time.Clock() # The clock be used to limit our fps
 		self.fps = 60
@@ -54,7 +51,7 @@ class Game:
 		self.ceilBox = (0, 0, self.winSize[0], self.winSize[1] / 2)
 		self.floorBox = (0, self.winSize[1] / 2, self.winSize[0], self.winSize[1])
 
-		self.nbRays = 1920 // 2
+		self.nbRays = define.NB_RAY
 		self.rays = []
 
 		self.intersections = []
@@ -163,23 +160,28 @@ class Game:
 
 		# Render of '3d' view
 		if not self.minimap:
-			pg.draw.rect(self.win, mymap.CEIL_COLOR, self.ceilBox)
-			pg.draw.rect(self.win, mymap.FLOOR_COLOR, self.floorBox)
+			# Draw ceiling and floor
+			pg.draw.rect(self.win, define.CEIL_COLOR, self.ceilBox)
+			pg.draw.rect(self.win, define.FLOOR_COLOR, self.floorBox)
 			large = (self.winSize[0] // self.nbRays)
 			for i in range(len(self.intersections)):
 				dist, inter, xRatio, face = self.intersections[i]
+				# If there is intersection
 				if 0 <= dist:
 					ray = self.rays[i]
 
+					# Patch fish eye
 					diffRot = mf.vecToOrientation(ray.vec) - self.player.orientation
-					radDiffRot = diffRot * PI_DIV_180
+					radDiffRot = diffRot * define.PI_DIV_180
 					dist *= math.cos(radDiffRot)
 
-					dist /= mymap.WALL_SIZE
+					# Normlaise distance to wall
+					dist /= define.WALL_SIZE
 					size = self.screenDist / (dist + 0.00001)
 
 					topY = self.halfwinH - (size / 2)
 
+					# Draw texture
 					if face == 'N':
 						self.drawLineTexture(self.textureN, i * large, xRatio, large, topY, size)
 					elif face == 'S':
@@ -206,6 +208,7 @@ class Game:
 			self.win.fill((0, 0, 0)) # We clean our screen with one color
 			toMove = np.array((self.winSize)) / 2 - self.player.pos
 
+			# Draw all rays
 			for i in range(len(self.intersections)):
 				inter = self.intersections[i]
 				ray = self.rays[i]
@@ -219,9 +222,11 @@ class Game:
 					endPos = p + toMove
 					pg.draw.line(self.win, (100, 100, 100), startPos, endPos)
 
+			# Draw all segements
 			for seg in self.segments:
 				seg.drawMinimap(self.win, toMove)
 
+			# Draw player
 			self.player.drawMinimap(self.win, toMove)
 
 		pg.display.update() # We update the drawing. Before the function call, any changes will be not visible
@@ -241,10 +246,14 @@ class Game:
 		if x == texture.get_width():
 			x -= 1
 
+		# Get a subpart of the texture
 		wall = texture.subsurface((x, 0, 1, texture.get_height()))
 
+		# Resize the subpart the to the correct size for display
 		wall = pg.transform.scale(wall, (large, size))
 
+		# Draw subpart
 		self.win.blit(wall, (winX, startY))
+
 
 Game().run() # Start game
