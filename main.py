@@ -33,10 +33,10 @@ class Game:
 		self.minimap = False
 		self.waitMinimap = 0
 
-		self.textureN = pg.image.load("imgs/N.png").convert_alpha()
-		self.textureS = pg.image.load("imgs/S.png").convert_alpha()
-		self.textureE = pg.image.load("imgs/E.png").convert_alpha()
-		self.textureW = pg.image.load("imgs/W.png").convert_alpha()
+		self.textureN = pg.image.load(define.NORTH_TEXTURE).convert_alpha()
+		self.textureS = pg.image.load(define.SOUTH_TEXTURE).convert_alpha()
+		self.textureE = pg.image.load(define.EAST_TEXTURE).convert_alpha()
+		self.textureW = pg.image.load(define.WEAST_TEXTURE).convert_alpha()
 
 		self.segments = mymap.getSegmentFromMap()
 

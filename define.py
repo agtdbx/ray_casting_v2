@@ -18,6 +18,16 @@ WALL_SIZE = 100
 CEIL_COLOR = (100, 100, 200)
 FLOOR_COLOR = (50, 100, 50)
 
+NORTH_TEXTURE = "imgs/N.png"
+SOUTH_TEXTURE = "imgs/S.png"
+WEAST_TEXTURE = "imgs/W.png"
+EAST_TEXTURE = "imgs/E.png"
+
+# NORTH_TEXTURE = "imgs/4k.jpg"
+# SOUTH_TEXTURE = "imgs/4k.jpg"
+# WEAST_TEXTURE = "imgs/4k.jpg"
+# EAST_TEXTURE = "imgs/4k.jpg"
+
 STRMAP = [
 	["1111111111"],
 	["1011000001"],
